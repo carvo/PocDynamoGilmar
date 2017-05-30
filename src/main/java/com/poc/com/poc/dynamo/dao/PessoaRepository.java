@@ -31,8 +31,8 @@ public class PessoaRepository {
     @PostConstruct
     public void init() {
 
-        DynamoDBMapperConfig.Builder builder = new DynamoDBMapperConfig.Builder();
-        DynamoDBMapperConfig dbMapperConfig = builder.build();
+        final DynamoDBMapperConfig.Builder builder = new DynamoDBMapperConfig.Builder();
+        final DynamoDBMapperConfig dbMapperConfig = builder.build();
         mapper = new DynamoDBMapper(dbClient, dbMapperConfig);
 
     }
@@ -41,34 +41,34 @@ public class PessoaRepository {
         dbClient.deleteTable("Pessoa");
     }
 
-    public PessoaEntity save(PessoaEntity entity) {
+    public PessoaEntity save(final PessoaEntity entity) {
         mapper.save(entity);
         return entity;
     }
 
-    public List<PessoaEntity> listaTodasPessoasPelaIdadeScan(Integer idade) {
-        Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
+    public List<PessoaEntity> listaTodasPessoasPelaIdadeScan(final Integer idade) {
+        final Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
         expressionAttributeValues.put(":idade", new AttributeValue().withN(idade.toString()));
 
-        DynamoDBScanExpression expression = new DynamoDBScanExpression().withConsistentRead(Boolean.FALSE)
+        final DynamoDBScanExpression expression = new DynamoDBScanExpression().withConsistentRead(Boolean.FALSE)
                 .withFilterExpression(":idade = idade").withExpressionAttributeValues(expressionAttributeValues);
 
         return mapper.scan(PessoaEntity.class, expression);
 
     }
 
-    public List<PessoaEntity> listaTodasPessoasPelaIdadeQuery(Integer idade) {
+    public List<PessoaEntity> listaTodasPessoasPelaIdadeQuery(final Integer idade) {
 
-        Map<String, String> expressionAttributesNames = new HashMap<>();
+        final Map<String, String> expressionAttributesNames = new HashMap<>();
         expressionAttributesNames.put("#idade", "idade");
         // expressionAttributesNames.put("#nome","nome");
 
-        Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
+        final Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
         expressionAttributeValues.put(":idade", new AttributeValue().withN(idade.toString()));
         // expressionAttributeValues.put(":nome",new
         // AttributeValue().withN("Pedro"));
 
-        DynamoDBQueryExpression<PessoaEntity> expression = new DynamoDBQueryExpression<PessoaEntity>()
+        final DynamoDBQueryExpression<PessoaEntity> expression = new DynamoDBQueryExpression<PessoaEntity>()
                 .withIndexName("idadeIndex").withKeyConditionExpression("#idade = :idade")
                 .withExpressionAttributeNames(expressionAttributesNames)
                 .withExpressionAttributeValues(expressionAttributeValues).withConsistentRead(false);
@@ -78,11 +78,11 @@ public class PessoaRepository {
 
     public PessoaEntity retornaUltimoRegistroQuery() {
 
-        Map<String, String> expressionAttributesNames = new HashMap<>();
+        final Map<String, String> expressionAttributesNames = new HashMap<>();
         // expressionAttributesNames.put("#dataDeInclusao", "dataDeInclusao");
         expressionAttributesNames.put("#idade", "idade");
 
-        Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
+        final Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
         // expressionAttributeValues.put(":dataDeInclusao",
         // new AttributeValue().withN(Long.toString(new Date().getTime())));
         expressionAttributeValues.put(":idade", new AttributeValue().withN("20"));
@@ -90,7 +90,7 @@ public class PessoaRepository {
         // condition.withComparisonOperator(ComparisonOperator.LT)
         // .withAttributeValueList(new AttributeValue().withN(Long.toString(new Date().getTime())));
 
-        DynamoDBQueryExpression<PessoaEntity> expression = new DynamoDBQueryExpression<PessoaEntity>()
+        final DynamoDBQueryExpression<PessoaEntity> expression = new DynamoDBQueryExpression<PessoaEntity>()
                 // .withIndexName("idadeIndex").withKeyConditionExpression("#dataDeInclusao < :dataDeInclusao and #idade
                 // = :idade")
                 .withIndexName("idadeIndex").withKeyConditionExpression("#idade = :idade")
